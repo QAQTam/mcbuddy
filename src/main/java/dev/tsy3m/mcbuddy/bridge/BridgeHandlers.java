@@ -63,6 +63,24 @@ public final class BridgeHandlers {
                   )
                );
             }
+            case "agent.give": {
+               ServerPlayer self = BuddyAgent.current();
+               if (self == null) {
+                  JsonObject noAgent = new JsonObject();
+                  noAgent.addProperty("given", false);
+                  noAgent.addProperty("reason", "no agent spawned");
+                  return BridgeJson.result(id, noAgent);
+               }
+
+               return BridgeJson.result(
+                  id,
+                  BuddyAgent.give(
+                     BridgeJson.stringParam(request, "item", "minecraft:stone"),
+                     BridgeJson.intParam(request, "count", 1),
+                     BridgeJson.intParam(request, "slot", -1)
+                  )
+               );
+            }
             case "camera.on": {
                if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() != net.fabricmc.api.EnvType.CLIENT) {
                   return BridgeJson.error(id, "camera is client-only");
@@ -140,6 +158,18 @@ public final class BridgeHandlers {
             }
             case "world.pad":
                return BridgeJson.result(id, WorldFixture.pad(server, BridgeJson.intParam(request, "radius", 5)));
+            case "world.materialize":
+               return BridgeJson.result(
+                  id,
+                  WorldFixture.materialize(
+                     server,
+                     BridgeJson.stringParam(request, "block", "minecraft:stone"),
+                     BridgeJson.intParam(request, "x", 0),
+                     BridgeJson.intParam(request, "y", 64),
+                     BridgeJson.intParam(request, "z", 0),
+                     BridgeJson.intParam(request, "radius", 1)
+                  )
+               );
             case "agent.teleport":
                return BridgeJson.result(
                   id,

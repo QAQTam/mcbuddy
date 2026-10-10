@@ -3,6 +3,7 @@ package dev.tsy3m.mcbuddy.mixin;
 import dev.tsy3m.mcbuddy.BuddyAgent;
 import dev.tsy3m.mcbuddy.BuddyConfig;
 import dev.tsy3m.mcbuddy.bridge.BridgeServer;
+import dev.tsy3m.mcbuddy.Mcbuddy;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.server.IntegratedServer;
@@ -21,8 +22,17 @@ public class MinecraftServerTickConnectionMixin {
    )
    private void mcbuddy$tickAgent(CallbackInfo ci) {
       if (!((Object)this instanceof IntegratedServer server && server.isPaused() && !BuddyConfig.keepTickingWhilePaused)) {
-         BuddyAgent.tickAgentConnection();
-         BridgeServer.tick();
+         try {
+            BuddyAgent.tickAgentConnection();
+         } catch (Throwable t) {
+            Mcbuddy.LOGGER.error("[mcbuddy] agent tick failed", t);
+         }
+
+         try {
+            BridgeServer.tick();
+         } catch (Throwable t) {
+            Mcbuddy.LOGGER.error("[mcbuddy] bridge tick failed", t);
+         }
       }
    }
 }

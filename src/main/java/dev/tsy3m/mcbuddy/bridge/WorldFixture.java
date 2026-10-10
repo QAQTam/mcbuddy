@@ -6,6 +6,7 @@ import dev.tsy3m.mcbuddy.BuddyConfig;
 import dev.tsy3m.mcbuddy.Mcbuddy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,6 +59,46 @@ public final class WorldFixture {
             out.addProperty("reason", "no agent or no overworld");
             return out;
          }
+      }
+   }
+
+   public static JsonObject materialize(MinecraftServer server, String blockId, int x, int y, int z, int radius) {
+      JsonObject out = new JsonObject();
+      if (!BuddyConfig.devWrites) {
+         out.addProperty("written", false);
+         out.addProperty("reason", "dev_writes is off");
+         return out;
+      } else {
+         net.minecraft.world.level.block.Block block = BuiltInRegistries.BLOCK.getValue(net.minecraft.resources.Identifier.parse(blockId));
+         if (block == net.minecraft.world.level.block.Blocks.AIR) {
+            out.addProperty("written", false);
+            out.addProperty("reason", "unknown block: " + blockId);
+            return out;
+         }
+
+         ServerLevel level = server.getLevel(Level.OVERWORLD);
+         if (level == null) {
+            out.addProperty("written", false);
+            out.addProperty("reason", "no overworld");
+            return out;
+         }
+
+         radius = Math.max(0, Math.min(4, radius));
+         int changed = 0;
+         for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+               BlockPos pos = new BlockPos(x + dx, y, z + dz);
+               if (loaded(level, pos) && level.setBlock(pos, block.defaultBlockState(), 3, 512)) {
+                  changed++;
+               }
+            }
+         }
+
+         out.addProperty("written", true);
+         out.addProperty("block", blockId);
+         out.addProperty("blocks_changed", changed);
+         Mcbuddy.LOGGER.info("[mcbuddy] materialize {} at {} {} {} radius {} changed {}", new Object[]{blockId, x, y, z, radius, changed});
+         return out;
       }
    }
 

@@ -135,7 +135,14 @@ public final class BridgeServer {
             return;
          }
 
-         String response = BridgeHandlers.handle(pending.request);
+         String response;
+         try {
+            response = BridgeHandlers.handle(pending.request);
+         } catch (Throwable t) {
+            Mcbuddy.LOGGER.error("[mcbuddy] bridge handler failed for {}", pending.request, t);
+            response = BridgeJson.error(BridgeJson.idOf(pending.request), "handler crashed: " + t.getMessage());
+         }
+
          synchronized (pending) {
             pending.response = response;
             pending.notifyAll();

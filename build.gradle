@@ -29,6 +29,17 @@ java {
 	targetCompatibility = JavaVersion.VERSION_25
 }
 
+// Fixed dev identity: the real player keeps the same name/uuid across launches
+// (Loom otherwise randomizes "Player###" every runClient, so worlds forget you).
+loom {
+	runs {
+		client {
+			programArgs '--username', 'tsy3m'
+			programArgs '--uuid', '0a23e6f3-58f2-3f8c-84c6-7976fb305de4'
+		}
+	}
+}
+
 jar {
 	from('LICENSE')
 }

@@ -467,6 +467,33 @@ public final class BuddyAgent {
       }
    }
 
+   public static JsonObject give(String itemName, int count, int slot) {
+      JsonObject out = new JsonObject();
+      ServerPlayer self = agent;
+      if (self == null) {
+         out.addProperty("given", false);
+         out.addProperty("reason", "no agent spawned");
+         return out;
+      }
+
+      net.minecraft.world.item.Item item = BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.parse(itemName));
+      if (item == net.minecraft.world.item.Items.AIR) {
+         out.addProperty("given", false);
+         out.addProperty("reason", "unknown item: " + itemName);
+         return out;
+      }
+
+      Inventory inv = self.getInventory();
+      int target = slot >= 0 && slot < inv.getContainerSize() ? slot : inv.getSelectedSlot();
+      inv.setItem(target, new net.minecraft.world.item.ItemStack(item, Math.max(1, count)));
+      inv.setSelectedSlot(target);
+      out.addProperty("given", true);
+      out.addProperty("slot", target);
+      out.addProperty("item", itemName);
+      out.addProperty("held", describe(self.getInventory().getSelectedItem()));
+      return out;
+   }
+
    public static JsonObject taskStatus() {
       JsonObject out = new JsonObject();
       WalkTask task = WalkTask.current();
