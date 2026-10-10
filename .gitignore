@@ -1,0 +1,18 @@
+# gradle
+.gradle/
+build/
+
+# ide
+.idea/
+*.iml
+.vscode/
+.qoder/
+
+# minecraft dev runtime
+run/
+
+# recovery intermediates (not source of truth)
+decompiled/
+extracted/
+vineflower.jar
+mc-source/

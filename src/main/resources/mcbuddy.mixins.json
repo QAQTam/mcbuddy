@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "dev.tsy3m.mcbuddy.mixin",
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"client": [
+		"MinecraftServerTickConnectionMixin",
+		"IntegratedServerPauseMixin",
+		"ServerCommonPacketListenerImplAccessor",
+		"ServerGamePacketListenerImplTeleportAccessor",
+		"PlayerListJoinMixin",
+		"ServerGamePacketListenerImplChatMixin",
+		"ServerGamePacketListenerImplInboundMixin",
+		"CommandsRegisterMixin",
+		"ServerPlayerTickMixin"
+	]
+}

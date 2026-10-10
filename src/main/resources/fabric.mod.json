@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "mcbuddy",
+	"version": "${version}",
+	"name": "McBuddy",
+	"description": "Puts an AI companion into your singleplayer world as a real player: a stateless MCP facade drives an in-process agent that walks, mines and builds through vanilla's own code paths.",
+	"authors": [
+		"tsy3m"
+	],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.tsy3m.mcbuddy.Mcbuddy"
+		]
+	},
+	"mixins": [
+		"mcbuddy.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": ">=26.3 <26.4"
+	}
+}
