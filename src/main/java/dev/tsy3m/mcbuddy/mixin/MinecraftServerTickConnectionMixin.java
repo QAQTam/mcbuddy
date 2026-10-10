@@ -20,7 +20,7 @@ public class MinecraftServerTickConnectionMixin {
       at = {@At("TAIL")}
    )
    private void mcbuddy$tickAgent(CallbackInfo ci) {
-      if (!(this instanceof IntegratedServer server && server.isPaused() && !BuddyConfig.keepTickingWhilePaused)) {
+      if (!((Object)this instanceof IntegratedServer server && server.isPaused() && !BuddyConfig.keepTickingWhilePaused)) {
          BuddyAgent.tickAgentConnection();
          BridgeServer.tick();
       }

@@ -11,8 +11,9 @@ base {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	// No mappings line: MC 26.3 jars ship unobfuscated (no ProGuard mappings are
+	// published anymore), and Loom 1.18+ supports mapping-less unobfuscated builds.
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 }
 
 processResources {

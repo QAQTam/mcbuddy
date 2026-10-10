@@ -17,7 +17,7 @@ public class ServerPlayerTickMixin {
       at = {@At("TAIL")}
    )
    private void mcbuddy$drainAgentQueue(CallbackInfo ci) {
-      ServerPlayer self = (ServerPlayer)this;
+      ServerPlayer self = (ServerPlayer)(Object)this;
       BuddyAgent.tickPendingSpawn(self);
       BuddyAgent.tickIfAgent(self);
    }

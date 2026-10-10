@@ -1,5 +1,8 @@
 pluginManagement {
 	repositories {
+		// Local mirror: fabric-loom 1.18.4 was fetched manually because
+		// maven.fabricmc.net kept timing out without a proxy.
+		maven { url = uri("${System.getProperty('user.home')}/tools/maven-local") }
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
