@@ -22,7 +22,11 @@
 ## 三、脚本资产（scripts/）
 
 - `ts/mcbuddy.ts` — 类型化客户端（Node26 原生跑 TS）：Bridge/重试/status/column/groundOf/place/teleport/freecam/shot
-- `ts/build-flat.ts` — 超平坦建房（地基19×20→白墙+门洞窗洞→深板岩柱→三级屋顶），按材料分组 multi-pass
+- `ts/build-flat.ts` — 超平坦建房（groundTopY 自动探测；也可 CLI 指定），管线：connect → detectGround → buildEngine → freecam QA shots
+- `ts/engine.ts` + `ts/buildspec.ts` — spec 驱动引擎与 house2 设计（见待办1）
+- `ts/check-spec-parity.ts` / `ts/verify-house2.ts` — parity 证明 / 实建逐格核对（ok=1444 air=0）
+- `build-spec.ts` + `../../specs/*.json` — **通用 spec 执行器**：`node ts/build-spec.ts <spec.json> [--check|--shots] [--x0 N --z0 N --y N]`；校验→建→逐格 verify（多材料声明共享格算 ok）；spec 写法见 `specs/README.md`（给外部模型/人创作建筑用）；地面探测在 footprint 外四角、24 行窗口上行（防探到自家屋顶/截断）
+- `ts/finish-house2.ts` `ts/shots-house2.ts` — 边缘格补齐 / 重拍 QA 截图（probe/debug/repair 为一次性）
 - `ts/courtyard.ts [margin]` — 清房周树植（isTreePart 白名单，不伤建筑）
 - `snap.mjs map|shot`（存 PNG，MAP_X/MAP_Z 定中心）、`orbit.mjs cx cz dist h`（8方位环拍）
 - `verify-house.mjs`（逐格占位核对）、`uuid-for.mjs`、`bridge-client.mjs`（smoke/call/watch）
@@ -44,13 +48,14 @@
 - m5 恢复 jar 与重建 jar：31 条目全同、19/28 类字节码级相同、9 类 API 面全同（分支反序差异）
 - 中式房子 #1：旧世界 `新的世界` x[47..65] z[-126..-107]，地基+墙+三级屋顶 1006/1006 格核对通过，庭院已清 8 格
 - 视觉闭环：world.map（高度差≥3 描边）+ orbit 环拍 8 张全部成功
-- 超平坦世界（tsy3m 的新地图）：#2 号房脚本就绪（`build-flat.ts`），尚未跑
+- 超平坦世界（tsy3m 的新地图）：#2 号房**已建成并逐格核对通过**（见下）
 
 ## 六、待办（按优先级）
 
-1. **BuildSpec 重构**（用户已同意方向）：把"设计"抽成声明式 spec（site/footprint/openings/pillars/roof/materials），引擎 `buildEngine(spec)` 只吃 spec。当前 `build-flat.ts` 的门窗/柱位/材料是硬编码谓词
-2. 跑通超平坦 #2 号房（流程全绿后可作流水线验收基准）
+1. ~~**BuildSpec 重构**~~ ✅ 2026-10-10 完成：`ts/buildspec.ts`（声明式 spec + house2）+ `ts/engine.ts`（specToGroups/giveStack/fillCells/buildEngine）；`build-flat.ts` 瘦身为纯管线。 parity 检查 `node scripts/ts/check-spec-parity.ts` PASS（6 组格子逐一等同旧谓词生成）。
+2. ~~跑通超平坦 #2 号房~~ ✅ 2026-10-10 完成：`node scripts/ts/build-flat.ts`（groundTopY 现自动探测，旧默认 -60 是错的，实际 -61）；实建 1,456 格中首建 1,447，9 格 stuck（engine 的 teleport 备选点会落进墙体/柱体，边缘格够不着）。用 `ts/finish-house2.ts`（teleport 到房外 +x+0.5/z±2.5 再 place）补齐。**`node scripts/ts/verify-house2.ts` → ok=1444 air=0**（仅 12 格"不符"是柱顶贯穿 roof1 环的深板岩帽，设计如此）。教训：`agent.place` 的 reason 可能缺省（placed=false 且无 reason），重试要点是先 teleport 到真正相邻的空位。
 3. **桥健康检查**：ping 超时时的诊断输出（端口通+无应答=服务端没 tick：查窗口最小化/是否进世界）
+3.5 **建筑流水线外协**：把 `specs/README.md` + `PTC-BRIEF.md` 交给 Claude Code 生成新 `specs/<name>.json`，本地用 `node ts/build-spec.ts specs/<name>.json --check` 校验后实建（house2.json 是黄金样例）
 4. `camera.path` 关键帧插值运镜（freecam 上加 keyframes+easing，出视频级运镜）
 5. Obsidian-Launcher 集成（E:\mcpro\Obsidian-Launcher，Tauri 启动器，CLAUDE.md 有文档）：把 fabric+mod 装进它的 game/versions，用它的固定 profile 拉 modded 游戏，替代 gradle runClient
 6. （旧世界）房子 #1 的窗户目前是 1 格高地板层（isWindow 用 h===1 判定，设计本意是 h===2），修不改随缘

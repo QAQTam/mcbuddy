@@ -1,18 +1,40 @@
-# gradle
+# --- gradle ---
 .gradle/
 build/
 
-# ide
+# --- ide ---
 .idea/
 *.iml
 .vscode/
 .qoder/
 
-# minecraft dev runtime
+# --- minecraft dev runtime (saves/logs/mods/config) ---
 run/
 
-# recovery intermediates (not source of truth)
+# --- recovery intermediates (not source of truth) ---
 decompiled/
 extracted/
 vineflower.jar
 mc-source/
+
+# --- built artifacts: use GitHub Releases for jars ---
+/mcbuddy-*.jar
+
+# --- build/record outputs: specs and scripts stay, videos and screenshots don't ---
+/artifacts/
+
+# --- harness / local session state ---
+.qaqh/
+
+# --- logs & crashes ---
+*.log
+hs_err_pid*
+replay_pid*
+
+# --- os junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- node (in case tooling grows) ---
+node_modules/

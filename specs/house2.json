@@ -1,0 +1,28 @@
+{
+  "name": "house2",
+  "site": { "x0": 14, "z0": -14, "groundTopY": null },
+  "footprint": { "fx": 19, "fz": 20 },
+  "wallHeight": 3,
+  "materials": { "foundation": "stone", "wall": "diorite", "pillar": "deepslate", "roof": "stone", "ridge": "deepslate" },
+  "slots": { "stone": 0, "diorite": 1, "deepslate": 2 },
+  "pillars": [
+    { "dx": 0, "dz": 0 }, { "dx": 0, "dz": 19 }, { "dx": 18, "dz": 0 }, { "dx": 18, "dz": 19 },
+    { "dx": 0, "dz": 9 }, { "dx": 0, "dz": 10 }, { "dx": 18, "dz": 9 }, { "dx": 18, "dz": 10 },
+    { "dx": 4, "dz": 0 }, { "dx": 14, "dz": 0 }, { "dx": 4, "dz": 19 }, { "dx": 14, "dz": 19 }
+  ],
+  "doors": [
+    { "dx": 9, "dz": 0, "height": 2 },
+    { "dx": 10, "dz": 0, "height": 2 }
+  ],
+  "windows": [
+    { "dx": 3, "dz": 0, "y": 2 }, { "dx": 6, "dz": 0, "y": 2 }, { "dx": 12, "dz": 0, "y": 2 }, { "dx": 15, "dz": 0, "y": 2 },
+    { "dx": 3, "dz": 19, "y": 2 }, { "dx": 6, "dz": 19, "y": 2 }, { "dx": 12, "dz": 19, "y": 2 }, { "dx": 15, "dz": 19, "y": 2 },
+    { "dx": 0, "dz": 5, "y": 2 }, { "dx": 0, "dz": 14, "y": 2 },
+    { "dx": 18, "dz": 5, "y": 2 }, { "dx": 18, "dz": 14, "y": 2 }
+  ],
+  "roofTiers": [
+    { "y": 4, "rect": { "x0": -1, "x1": 19, "z0": -1, "z1": 20 }, "mat": "roof" },
+    { "y": 5, "rect": { "x0": 1, "x1": 17, "z0": 1, "z1": 18 }, "mat": "roof" },
+    { "y": 6, "rect": { "x0": 7, "x1": 11, "z0": 1, "z1": 18 }, "mat": "ridge" }
+  ]
+}
