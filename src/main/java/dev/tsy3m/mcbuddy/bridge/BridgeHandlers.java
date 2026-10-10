@@ -40,6 +40,63 @@ public final class BridgeHandlers {
                result.addProperty("event_cursor", EventQueue.latest());
                return BridgeJson.result(id, result);
             }
+            case "camera.shot": {
+               if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() != net.fabricmc.api.EnvType.CLIENT) {
+                  return BridgeJson.error(id, "camera is client-only");
+               }
+
+               try {
+                  return BridgeJson.result(id, dev.tsy3m.mcbuddy.ClientCamera.capture(BridgeJson.intParam(request, "downscale", 2)));
+               } catch (Exception e) {
+                  return BridgeJson.error(id, "camera: " + e.getMessage());
+               }
+            }
+            case "world.map": {
+               ServerPlayer mapSelf = BuddyAgent.current();
+               return BridgeJson.result(
+                  id,
+                  WorldMap.of(
+                     server.overworld(),
+                     BridgeJson.intParam(request, "x", mapSelf == null ? 0 : mapSelf.blockPosition().getX()),
+                     BridgeJson.intParam(request, "z", mapSelf == null ? 0 : mapSelf.blockPosition().getZ()),
+                     BridgeJson.intParam(request, "radius", BridgeJson.intParam(request, "radius", 40))
+                  )
+               );
+            }
+            case "camera.on": {
+               if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() != net.fabricmc.api.EnvType.CLIENT) {
+                  return BridgeJson.error(id, "camera is client-only");
+               }
+
+               dev.tsy3m.mcbuddy.FreeCam.activate(
+                  BridgeJson.doubleParam(request, "x", 0.0),
+                  BridgeJson.doubleParam(request, "y", 80.0),
+                  BridgeJson.doubleParam(request, "z", 0.0),
+                  (float)BridgeJson.doubleParam(request, "yaw", 0.0),
+                  (float)BridgeJson.doubleParam(request, "pitch", 0.0)
+               );
+               JsonObject camOut = new JsonObject();
+               camOut.addProperty("freecam", true);
+               return BridgeJson.result(id, camOut);
+            }
+            case "camera.set": {
+               dev.tsy3m.mcbuddy.FreeCam.set(
+                  BridgeJson.doubleParam(request, "x", 0.0),
+                  BridgeJson.doubleParam(request, "y", 80.0),
+                  BridgeJson.doubleParam(request, "z", 0.0),
+                  (float)BridgeJson.doubleParam(request, "yaw", 0.0),
+                  (float)BridgeJson.doubleParam(request, "pitch", 0.0)
+               );
+               JsonObject camSet = new JsonObject();
+               camSet.addProperty("moved", true);
+               return BridgeJson.result(id, camSet);
+            }
+            case "camera.off": {
+               dev.tsy3m.mcbuddy.FreeCam.deactivate();
+               JsonObject camOff = new JsonObject();
+               camOff.addProperty("freecam", false);
+               return BridgeJson.result(id, camOff);
+            }
             case "world.digest": {
                ServerPlayer digestSelf = BuddyAgent.current();
                int x = BridgeJson.intParam(request, "x", digestSelf == null ? 0 : digestSelf.blockPosition().getX());
